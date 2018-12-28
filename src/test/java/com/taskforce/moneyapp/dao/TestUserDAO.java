@@ -17,7 +17,7 @@ public class TestUserDAO {
 	
 	private static Logger log = Logger.getLogger(TestUserDAO.class);
 	
-	private static final DAOFactory h2DaoFactory = DAOFactory.getDAOFactory(DAOFactory.H2);
+	private static final DAOFactory h2DaoFactory = DAOFactory.getDAOFactory(DAOFactory.FAST);
 
 	@BeforeClass
 	public static void setup() throws CustomException {

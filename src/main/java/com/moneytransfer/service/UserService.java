@@ -3,6 +3,8 @@ package com.moneytransfer.service;
 import com.moneytransfer.dao.DAOFactory;
 import com.moneytransfer.exception.CustomException;
 import com.moneytransfer.model.User;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javax.imageio.ImageIO;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -27,11 +30,10 @@ import org.apache.log4j.Logger;
 @Produces(MediaType.APPLICATION_JSON)
 public class UserService {
 
-  private final DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.H2);
-
+  private final DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.FAST);
+  private final static Pattern EMAIL = Pattern.compile("(?=.{1,250}$)(.+)@(.+){2,}\\.(.+){2,}");
   private static Logger log = Logger.getLogger(UserService.class);
 
-  private List<User> allUsers = new ArrayList<>();
 
   /**
    * Find by userName
@@ -62,8 +64,14 @@ public class UserService {
   @Path("/all")
   public Response getAllUsers() throws CustomException {
     List<User> users = daoFactory.getUserDAO().getAllUsers();
-    allUsers.addAll(users);
-    return Response.ok("[" + users.stream().map(User::toString).collect(Collectors.joining(",")) + "]").build();
+    StringBuilder sb = new StringBuilder("[");
+    for (User u : users){
+      sb.append(u);
+      sb.append(",");
+    }
+    sb.deleteCharAt(sb.length()-1);
+    sb.append("]");
+    return Response.ok(sb.toString()).build();
   }
 
   /**
@@ -76,10 +84,11 @@ public class UserService {
   @POST
   @Path("/create")
   public User createUser(User user) throws CustomException {
-    Matcher matcher = Pattern.compile("(?=.{1,250}$)(.+)@(.+){2,}\\.(.+){2,}").matcher(user.getEmailAddress());
+    Matcher matcher = EMAIL.matcher(user.getEmailAddress());
     if (!matcher.find()) {
       throw new WebApplicationException("User email is in wrong pattern", Response.Status.BAD_REQUEST);
     }
+    // TODO should be in one transaction
     if (daoFactory.getUserDAO().getUserByName(user.getUserName()) != null) {
       throw new WebApplicationException("User name already exist", Response.Status.BAD_REQUEST);
     }
@@ -147,19 +156,16 @@ public class UserService {
   public Response getUserImage(@PathParam("userId") long userId) throws IOException {
     InputStream r = UserService.class.getClassLoader().getResourceAsStream("user.jpg");
 
-    byte[] img = new byte[0];
-    int read = r.read();
-    while (read != -1) {
-      byte[] img1 = new byte[img.length+1];
-      for (int i = 0; i < img.length; i++) {
-        img1[i] = img[i];
-      }
-      img1[img1.length-1] = (byte) read;
-      img = img1;
-      read = r.read();
-    }
+    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
-    return Response.ok(img).header("hash", calcHashImg(img)).build();
+    int nRead;
+    byte[] data = new byte[16384];
+
+    while ((nRead = r.read(data, 0, data.length)) != -1) {
+      buffer.write(data, 0, nRead);
+    }
+    byte[] arr = buffer.toByteArray();
+    return Response.ok(arr).header("hash", calcHashImg(arr)).build();
   }
 
   private int calcHashImg(byte[] img) {

@@ -1,8 +1,8 @@
 --This script is used for unit test cases, DO NOT CHANGE!
 
 DROP TABLE IF EXISTS User;
-
-CREATE TABLE User (UserId LONG PRIMARY KEY NOT NULL,
+-- Oh, I really need to be it AUTO_INCREMENT, test will be Ok.
+CREATE TABLE User (UserId LONG PRIMARY KEY AUTO_INCREMENT NOT NULL,
  UserName VARCHAR(30) NOT NULL,
  EmailAddress VARCHAR(30) NOT NULL);
 

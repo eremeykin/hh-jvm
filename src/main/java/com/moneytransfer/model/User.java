@@ -2,6 +2,8 @@ package com.moneytransfer.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Objects;
+
 public class User {
 
   private long userId;
@@ -53,10 +55,7 @@ public class User {
 
   @Override
   public int hashCode() {
-    int result = (int) (userId ^ (userId >>> 32));
-    result = 31 * result + userName.hashCode();
-    result = 31 * result + emailAddress.hashCode();
-    return result;
+    return Objects.hash(getUserId(), getUserName(), getEmailAddress());
   }
 
   @Override

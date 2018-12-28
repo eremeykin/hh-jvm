@@ -25,7 +25,7 @@ public class Application {
 	public static void main(String[] args) throws Exception {
 		// Initialize H2 database with demo data
 		log.info("Initialize demo .....");
-		DAOFactory h2DaoFactory = DAOFactory.getDAOFactory(DAOFactory.H2);
+		DAOFactory h2DaoFactory = DAOFactory.getDAOFactory(DAOFactory.FAST);
 		h2DaoFactory.populateTestData();
 		log.info("Initialisation Complete....");
 		// Host service on jetty

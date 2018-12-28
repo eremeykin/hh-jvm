@@ -17,7 +17,7 @@ import static junit.framework.TestCase.assertTrue;
 
 public class TestAccountDAO {
 
-	private static final DAOFactory h2DaoFactory = DAOFactory.getDAOFactory(DAOFactory.H2);
+	private static final DAOFactory h2DaoFactory = DAOFactory.getDAOFactory(DAOFactory.FAST);
 
 	@BeforeClass
 	public static void setup() throws CustomException {

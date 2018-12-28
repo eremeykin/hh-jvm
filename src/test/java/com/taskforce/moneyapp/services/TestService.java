@@ -25,7 +25,7 @@ public abstract class TestService {
 
   static HttpClient client;
   private static DAOFactory h2DaoFactory =
-      DAOFactory.getDAOFactory(DAOFactory.H2);
+      DAOFactory.getDAOFactory(DAOFactory.FAST);
   ObjectMapper mapper = new ObjectMapper();
   URIBuilder builder = new URIBuilder().setScheme("http").setHost("localhost:8084");
 

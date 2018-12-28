@@ -16,7 +16,7 @@ import com.moneytransfer.model.UserTransaction;
 @Produces(MediaType.APPLICATION_JSON)
 public class TransactionService {
 
-	private final DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.H2);
+	private final DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.FAST);
 	
 	/**
 	 * Transfer fund between two accounts.

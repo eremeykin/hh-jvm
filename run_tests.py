@@ -5,7 +5,7 @@ from functools import wraps
 host = 'http://localhost:8080/'
 
 PROF_DATA = {}
-
+START_TIME = time.time()
 
 def profile(fn):
     @wraps(fn)
@@ -91,6 +91,7 @@ def play_scenario_1(user_name):
     transfer(250, acc['accountId'], find_account('yangluo')['accountId'])
     withdraw_money(acc['accountId'], 50)
     print()
+    print('time passed: ' + str(time.time()-START_TIME))
     print('users: ' + str(len(get_all_users())))
     print('accounts: ' + str(len(get_accounts())))
     print('yangluo money: ' + str(find_account('yangluo')['balance']))

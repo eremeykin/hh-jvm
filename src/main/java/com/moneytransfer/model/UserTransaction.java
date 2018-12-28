@@ -53,13 +53,13 @@ public class UserTransaction {
 
 		UserTransaction that = (UserTransaction) o;
 
-		if (!currencyCode.equals(that.currencyCode))
-			return false;
 		if (!amount.equals(that.amount))
+			return false;
+		if (!toAccountId.equals(that.toAccountId))
 			return false;
 		if (!fromAccountId.equals(that.fromAccountId))
 			return false;
-		return toAccountId.equals(that.toAccountId);
+		return currencyCode.equals(that.currencyCode);
 
 	}
 
